@@ -25,7 +25,7 @@ const validateSignUpData = (req) => {
     );
   }
 
-  if (password !== req.body.confirmPassword) {
+  if (password !== confirmPassword) {
     throw new Error("Passwords do not match");
   }
 

@@ -6,22 +6,18 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 authRouter.post("/signUp", async (req, res) => {
-  console.log(req.body)
   const {
     firstName,
     lastName,
-    phoneNumber,
     emailId,
     password,
-    confirmPassword,
   } = req.body;
   try {
-    validateSignUpData(req);
+    // validateSignUpData(req);
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const user = new UserModel({
       firstName,
       lastName,
-      phoneNumber,
       emailId,
       password: hashedPassword,
       confirmPassword: hashedPassword,
