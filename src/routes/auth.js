@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 authRouter.post("/signUp", async (req, res) => {
+  console.log(req.body)
   const {
     firstName,
     lastName,
@@ -56,7 +57,7 @@ authRouter.post("/signIn", async (req, res) => {
 
     const token = await user.getJWT();
     res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
-    res.status(200).json({ message: "Login successful" });
+    res.status(200).json({ message: "Login successful", data: user });
   } catch (err) {
     res.status(500).json({ message: "Error:" + err.message });
   }
