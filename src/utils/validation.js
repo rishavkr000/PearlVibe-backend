@@ -1,7 +1,7 @@
 const validator = require("validator");
 
 const validateSignUpData = (req) => {
-  const { firstName, lastName, emailId, password, confirmPassword  } = req.body;
+  const { firstName, lastName, emailId, password, confirmPassword } = req.body;
 
   if (!firstName || !emailId || !password) {
     throw new Error("Please provide all the required fields");
@@ -32,4 +32,20 @@ const validateSignUpData = (req) => {
   return true;
 };
 
-module.exports = { validateSignUpData };
+const validateProfileUpdateData = (req) => {
+  const { firstName, lastName, emailId } = req.body;
+
+  if (firstName && firstName.length > 20) {
+    throw new Error("First name must not be greater than 20 characters.");
+  }
+
+  if (lastName && lastName.length > 20) {
+    throw new Error("Last name must not be greater than 20 characters.");
+  }
+
+  if (emailId && !validator.isEmail(emailId)) {
+    throw new Error("Email is not valid");
+  }
+};
+
+module.exports = { validateSignUpData, validateProfileUpdateData };
