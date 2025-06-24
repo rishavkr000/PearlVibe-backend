@@ -48,4 +48,30 @@ const validateProfileUpdateData = (req) => {
   }
 };
 
-module.exports = { validateSignUpData, validateProfileUpdateData };
+const validateContactData = (req) => {
+  const { name, emailId, phone, subject, message } = req.body;
+
+  if (!name || !emailId || !phone || !subject || !message) {
+    throw new Error("Please provide all the required fields");
+  }
+
+  if (!validator.isEmail(emailId)) {
+    throw new Error("Email Id is not valid");
+  }
+
+  if (phone.length !== 10) {
+    throw new Error("Phone number must be exactly 10 digits");
+  }
+
+  if (!validator.isMobilePhone(phone, "en-IN")) {
+    throw new Error("Phone number is not a valid Indian mobile number");
+  }
+
+  return true;
+};
+
+module.exports = {
+  validateSignUpData,
+  validateProfileUpdateData,
+  validateContactData,
+};

@@ -14,9 +14,11 @@ app.use(cookieParser());
 
 const authRouter = require("./src/routes/auth");
 const profileRouter = require("./src/routes/profile");
+const contactRouter = require("./src/routes/contact");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
+app.use("/", contactRouter);
 
 app.use("/", (err, req, res, next) => {
   if (err) {
