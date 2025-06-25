@@ -3,15 +3,11 @@ const authRouter = express.Router();
 const UserModel = require("../models/user");
 const { validateSignUpData } = require("../utils/validation");
 const bcrypt = require("bcrypt");
+const userAuth = require("../middlewares/auth");
 const saltRounds = 10;
 
 authRouter.post("/signUp", async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    emailId,
-    password,
-  } = req.body;
+  const { firstName, lastName, emailId, password } = req.body;
   try {
     validateSignUpData(req);
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -62,6 +58,42 @@ authRouter.post("/signIn", async (req, res) => {
 authRouter.get("/logout", async (req, res) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Logout successful" });
+});
+
+authRouter.post("/changePassword", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({ msg: "All fields are mandatory" });
+    }
+
+    const isOldPasswordCorrect = await bcrypt.compare(
+      oldPassword,
+      user.password
+    );
+    if (!isOldPasswordCorrect) {
+      return res.status(400).json({ msg: "Old Password is not correct" });
+    }
+
+    if (newPassword != confirmPassword) {
+      return res
+        .status(400)
+        .json({ msg: "New Password and confirm password should be same" });
+    }
+
+    const encryptPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    user.password = encryptPassword;
+    user.confirmPassword = encryptPassword;
+
+    await user.save();
+
+    return res.status(200).json({ msg: "Password changed successfully" });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = authRouter;
