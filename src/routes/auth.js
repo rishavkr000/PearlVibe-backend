@@ -96,4 +96,15 @@ authRouter.post("/changePassword", userAuth, async (req, res) => {
   }
 });
 
+authRouter.patch("/deactivateAccount", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+    user.isDeleted = true;
+    await user.save();
+    return res.status(200).json({ msg: "Account deactivated successfully" });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = authRouter;

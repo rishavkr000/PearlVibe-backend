@@ -25,6 +25,13 @@ const userSchema = new mongoose.Schema({
   photoUrl: {
     type: String,
     default: "https://tinyurl.com/4v2xv24m"
+  },
+  phoneNumber: {
+    type: String
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
   }
 }, { timestamps: true });
 
