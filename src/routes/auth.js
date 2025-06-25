@@ -77,6 +77,10 @@ authRouter.post("/changePassword", userAuth, async (req, res) => {
       return res.status(400).json({ msg: "Old Password is not correct" });
     }
 
+    if(oldPassword == newPassword) {
+      return res.status(400).json({ msg: "New Password cannot be same as the old password."})
+    }
+
     if (newPassword != confirmPassword) {
       return res
         .status(400)
