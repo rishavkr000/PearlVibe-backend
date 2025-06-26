@@ -12,10 +12,9 @@ const userAuth = async (req, res, next) => {
 
     const { _id } = tokenVerification;
 
-    const user = await User.findById(_id);
+    const user = await User.findOne({_id, isDeleted: false});
 
     if (!user) return res.status(404).json({ message: "User not found" });
-
     req.user = user;
     next();
   } catch (err) {

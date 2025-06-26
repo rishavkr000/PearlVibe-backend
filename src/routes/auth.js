@@ -47,9 +47,18 @@ authRouter.post("/signIn", async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
+    let wasDeactivated = false;
+    if (user.isDeleted === true) {
+      user.isDeleted = false;
+      await user.save();
+      wasDeactivated = true;
+    }
+
     const token = await user.getJWT();
     res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
-    res.status(200).json({ message: "Login successful", data: user });
+    res
+      .status(200)
+      .json({ message: "Login successful", data: user, wasDeactivated });
   } catch (err) {
     res.status(500).json({ message: "Error:" + err.message });
   }
@@ -77,8 +86,10 @@ authRouter.post("/changePassword", userAuth, async (req, res) => {
       return res.status(400).json({ msg: "Old Password is not correct" });
     }
 
-    if(oldPassword == newPassword) {
-      return res.status(400).json({ msg: "New Password cannot be same as the old password."})
+    if (oldPassword == newPassword) {
+      return res
+        .status(400)
+        .json({ msg: "New Password cannot be same as the old password." });
     }
 
     if (newPassword != confirmPassword) {
