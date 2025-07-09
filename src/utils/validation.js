@@ -70,8 +70,40 @@ const validateContactData = (req) => {
   return true;
 };
 
+const validateProductData = (req) => {
+  if (!req.body) {
+    throw new Error("Enter details for product creation");
+  }
+  
+  const { name, price } = req.body;
+  const files = req.files;
+
+  if (!name) {
+    throw new Error("Enter name of the product");
+  }
+
+  if (!price) {
+    throw new Error("Enter price of the product");
+  }
+
+  let priceRegex = /^\d+(\.\d{1,2})?$/;
+  if (!priceRegex.test(price)) {
+    throw new Error("Price is not a valid number");
+  }
+
+  if(files.length > 1){
+    throw new Error("Upload only one file at a time")
+  }
+
+  let imageRegex = /(jpeg|png|jpg)$/
+  if(imageRegex.test(files[0])){
+    throw new Error("Format must be jpeg/jpg/png only")
+  }
+};
+
 module.exports = {
   validateSignUpData,
   validateProfileUpdateData,
   validateContactData,
+  validateProductData,
 };

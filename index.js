@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDB = require("./src/config/database");
 const cookieParser = require("cookie-parser");
+const multer = require("multer");
 const cors = require("cors");
 const app = express();
 require("dotenv").config();
@@ -11,14 +12,17 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(multer().any());
 
 const authRouter = require("./src/routes/auth");
 const profileRouter = require("./src/routes/profile");
 const contactRouter = require("./src/routes/contact");
+const productRouter = require("./src/routes/product");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", contactRouter);
+app.use("/", productRouter);
 
 app.use("/", (err, req, res, next) => {
   if (err) {
